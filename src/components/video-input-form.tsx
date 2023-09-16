@@ -117,9 +117,32 @@ export function VideoInputForm({ onVideoUploaded }: VideoInputFormProps) {
 
 		return URL.createObjectURL(videoFile);
 	}, [videoFile]);
+
+	// handle drag events
+	const handleDrag = function (e: any) {
+		e.preventDefault();
+		e.stopPropagation();
+	};
+
+	// triggers when file is dropped
+	const handleDrop = function (e: any) {
+		e.preventDefault();
+		e.stopPropagation();
+		// setDragActive(false);
+		if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+			// handleFiles(e.dataTransfer.files);
+
+			const selectedFile = e.dataTransfer.files[0];
+			setVideoFile(selectedFile);
+		}
+	};
 	return (
 		<form className="space-y-6" onSubmit={handleUploadVideo}>
 			<label
+				onDragEnter={handleDrag}
+				onDragLeave={handleDrag}
+				onDragOver={handleDrag}
+				onDrop={handleDrop}
 				htmlFor="video"
 				className="border relative flex rounded-md aspect-video cursor-pointer border-dashed text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-primary/5"
 			>
@@ -152,7 +175,7 @@ export function VideoInputForm({ onVideoUploaded }: VideoInputFormProps) {
 					ref={promptInputRef}
 					id="transcription_prompt"
 					className=" leading-relaxed h-20 resize-none"
-					placeholder='Inclua palavras chave mencionadas no video, como "Olá, meu nome é" ou "Bom dia, boa tarde, boa noite"'
+					placeholder="Inclua palavras chave mencionadas no video"
 				/>
 			</div>
 			<Button disabled={status !== 'wating'} className="w-full" type="submit">
